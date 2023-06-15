@@ -1,5 +1,21 @@
+[package]
+name = "learning-bevy"
+version = "0.1.0"
+edition = "2021"
+authors = ["ayrock-dev", "CarpOfTruth"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+bevy = "0.10.1"
+bevy_prototype_debug_lines = "0.10.1"
+bevy_ecs_ldtk = "0.6.0"
+bevy_rapier2d = { version = "0.21.0", features = ["debug-render-2d"] }
+serde = { version = "1.0.160", features = ["derive"] }
+serde_yaml = "0.9.21"
+
 [workspace]
 resolver = "2" # Important! wgpu/Bevy needs this!
 members = [
-    "examples/sensor-collider",
+  "examples/sensor-collider",
 ]
