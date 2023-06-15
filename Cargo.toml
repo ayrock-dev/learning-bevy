@@ -1,5 +1,5 @@
 [workspace]
-
+resolver = "2" # Important! wgpu/Bevy needs this!
 members = [
     "examples/sensor-collider",
 ]
