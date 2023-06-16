@@ -1,5 +1,6 @@
-use bevy::{prelude::*, utils::tracing::field::display};
+use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
+use bevy_ecs_ldtk::prelude::*;
 
 #[derive(Component)]
 struct Person;
@@ -7,12 +8,21 @@ struct Person;
 struct Name(String);
 #[derive(Resource)]
 struct GreetTimer(Timer);
-#[derive(Component)]
+#[derive(Clone, Default, Component)]
 struct Player;
 #[derive(Component)]
 struct DoorUser;
 #[derive(Component)]
 struct Door(String);
+
+#[derive(Clone, Default, Bundle, LdtkEntity)]
+struct PlayerBundle {
+  #[sprite_bundle("player.png")]
+  #[bundle]
+  pub sprite_bundle: SpriteBundle,
+
+  pub player: Player,
+}
 
 pub struct HelloPlugin;
 
@@ -27,14 +37,24 @@ impl Plugin for HelloPlugin {
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
+        .add_plugin(LdtkPlugin)
+        .insert_resource(LevelSelection::Uid(4))
+        .insert_resource(LdtkSettings {
+          level_spawn_behavior: LevelSpawnBehavior::UseWorldTranslation {
+              load_level_neighbors: true,
+          },
+          set_clear_color: SetClearColor::FromLevelBackground,
+          ..Default::default()
+        })
+        .register_ldtk_entity::<PlayerBundle>("Player")
         // .add_plugin(HelloPlugin)
         .add_plugin(RapierPhysicsPlugin::<NoUserData>::pixels_per_meter(100.0))
         .add_plugin(RapierDebugRenderPlugin::default())
-        .add_startup_system(setup_graphics)
-        .add_startup_system(setup_physics)
-        .add_system(loop_ball_altitude)
-        .add_system(display_door_use)
-        .add_system(mark_door_users)
+        .add_startup_system(setup)
+        //.add_startup_system(setup_physics)
+        //.add_system(loop_ball_altitude)
+        //.add_system(display_door_use)
+        //.add_system(mark_door_users)
         .run();
 }
 
@@ -56,9 +76,15 @@ fn greet_people(time: Res<Time>, mut timer: ResMut<GreetTimer>, query: Query<&Na
     }
 }
 
-fn setup_graphics(mut commands: Commands) {
+fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     // Add a camera so we can see the debug-render.
     commands.spawn(Camera2dBundle::default());
+
+    let ldtk_handle = asset_server.load("game.ldtk");
+    commands.spawn(LdtkWorldBundle {
+        ldtk_handle,
+        ..Default::default()
+    });
 }
 
 fn setup_physics(mut commands: Commands) {
