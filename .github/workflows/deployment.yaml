@@ -33,7 +33,7 @@ jobs:
       - name: ⬇️ Checkout repo
         uses: actions/checkout@v2
 
-      - name: Cargo Registry Cache
+      - name: ⚡ Cargo Registry Cache
         uses: actions/cache@v2
         with:
           path: |
@@ -42,19 +42,31 @@ jobs:
             ~/.cargo/git/db
           key: cargo-registry
 
-      - name: Rust Toolchain
+      - name: ⚙️ Install Rust Toolchain
         uses: actions-rs/toolchain@v1
         with:
-          toolchain: stable
+          toolchain: nightly
           target: wasm32-unknown-unknown
           override: true
 
-      - uses: jetli/wasm-bindgen-action@v0.1.0
+      - name: ⚙️ Install WASM Bindgen
+        uses: jetli/wasm-bindgen-action@v0.1.0
         with:
           version: "0.2.83"
 
-      - name: 🔨 Rust Build for WASM
-        run: cargo build --verbose --release --target wasm32-unknown-unknown
+      - name: ✅ Cargo Version
+        run: cargo --version
+        run: rustup --version
+
+      - name: ✅ Rust Version
+        run: cargo --version
+        run: rustup --version
+
+      - name: 🔨 Cargo Build | WASM
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --verbose --release --target wasm32-unknown-unknown
 
       - name: 🛳️ Web Build
         run: wasm-bindgen --out-dir out --target web target
