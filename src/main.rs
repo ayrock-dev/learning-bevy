@@ -8,8 +8,8 @@ mod player;
 mod states;
 
 use bevy::prelude::*;
-use bevy_prototype_debug_lines::DebugLinesPlugin;
 use bevy_ecs_ldtk::prelude::*;
+use bevy_prototype_debug_lines::DebugLinesPlugin;
 
 use animation::AnimationPlugin;
 use followcamera::FollowCameraPlugin;
@@ -37,20 +37,17 @@ fn main() {
     .add_plugin(LocomotionPlugin)
     .add_plugin(PhysicsPlugin)
     .add_plugin(PlayerPlugin)
-
     .add_plugin(AnimationPlugin)
     .add_startup_system(setup_camera)
     .run();
 }
 
 fn setup_camera(mut commands: Commands) {
-  commands.spawn((
-    Camera2dBundle {
-      projection: OrthographicProjection {
-        scale: 0.25,
-        ..default()
-      },
+  commands.spawn((Camera2dBundle {
+    projection: OrthographicProjection {
+      scale: 0.25,
       ..default()
     },
-  ));
+    ..default()
+  },));
 }

@@ -17,5 +17,6 @@ serde_yaml = "0.9.21"
 [workspace]
 resolver = "2" # Important! wgpu/Bevy needs this!
 members = [
+  "examples/hello-world",
   "examples/sensor-collider",
 ]
