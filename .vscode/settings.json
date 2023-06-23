@@ -1,3 +1,0 @@
-{
-  "rust-analyzer.linkedProjects": [".\\examples\\hello-world\\Cargo.toml"]
-}
