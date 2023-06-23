@@ -1,0 +1,52 @@
+name: 🚀 Deploy
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    name: 🛳️ Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v2
+
+      - name: 🛳️ Build
+        run: cargo build --verbose
+
+  web-deploy:
+    name: 🚀 Web Deploy
+    runs-on: ubuntu-latest
+    needs: [build]
+    if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push'}}
+    steps:
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v2
+
+      - name: 📥 Download wasm-pack
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+
+      # For `cargo build` documentation, see
+      # https://doc.rust-lang.org/cargo/commands/cargo-build.html#compilation-options
+      - name: 🛳️ Rust WASM Build
+        # The general format of the `target` triple is <arch><sub>-<vendor>-<sys>-<abi>
+        run: cargo build --verbose --release --target wasm32-unknown-unknown
+
+      - name: 🛳️ Web Build
+        run: wasm-bindgen --out-dir out --target web target
+
+      - name: 🚀 Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          deploy_key: ${{ secrets.DEPLOY_KEY }}
+          publish_dir: out
