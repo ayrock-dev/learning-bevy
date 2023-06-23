@@ -56,10 +56,8 @@ jobs:
 
       - name: ✅ Cargo Version
         run: cargo --version
-        run: rustup --version
 
       - name: ✅ Rust Version
-        run: cargo --version
         run: rustup --version
 
       - name: 🔨 Cargo Build | WASM
