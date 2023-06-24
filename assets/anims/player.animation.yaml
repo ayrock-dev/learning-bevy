@@ -1,0 +1,7 @@
+name: player
+fps: 12
+root:
+  driver:
+    name: root
+    auto_increment: true
+  drivers:
