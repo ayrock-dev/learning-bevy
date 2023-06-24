@@ -47,10 +47,7 @@ jobs:
         run: rustup --version
 
       - name: 🔨 Cargo Build
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --verbose
+        run: cargo build --verbose
 
   web-deploy:
     name: 🚀 Web Deploy
@@ -77,13 +74,13 @@ jobs:
           target: wasm32-unknown-unknown
           override: true
 
-      - name: ⚙️ Install WASM Bindgen
+      - name: 📥 Install WASM Bindgen
         uses: jetli/wasm-bindgen-action@v0.1.0
         with:
           version: "0.2.83"
 
       # https://github.com/bevyengine/bevy/blob/main/docs/linux_dependencies.md
-      - name: ⚙️ Install Bevy Ubuntu dependencies
+      - name: 📥 Install Bevy Ubuntu dependencies
         run: sudo apt-get install g++ pkg-config libx11-dev libasound2-dev libudev-dev
 
       - name: ✅ Cargo Version
@@ -93,13 +90,16 @@ jobs:
         run: rustup --version
 
       - name: 🔨 Cargo Build | WASM
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --verbose --release --target wasm32-unknown-unknown
+        run: cargo build --verbose --release --target wasm32-unknown-unknown
 
-      - name: 🛳️ Web Build
-        run: wasm-bindgen --out-dir ./out/ --target web ./target/
+      - name: 🔨 Web Build
+        run: wasm-bindgen --out-dir ./out/ --target web ./target/wasm32-unknown-unknown/release/learning-bevy.wasm
+
+      - name: 📦 Copy Game Assets
+        run: cp -r assets out/assets
+
+      - name: 📦 Copy Static HTML
+        run: cp public/index.html out
 
       - name: 🚀 Deploy
         uses: peaceiris/actions-gh-pages@v3
