@@ -35,11 +35,10 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           toolchain: nightly
-          override: true
 
       # https://github.com/bevyengine/bevy/blob/main/docs/linux_dependencies.md
       - name: ⚙️ Install Bevy Ubuntu dependencies
-        run: sudo apt-get install g++ pkg-config libx11-dev libasound2-dev libudev-dev
+        run: sudo apt-get update; sudo apt-get install --no-install-recommends g++ pkg-config libx11-dev libasound2-dev libudev-dev
 
       - name: ✅ Cargo Version
         run: cargo --version
@@ -72,7 +71,6 @@ jobs:
         with:
           toolchain: nightly
           target: wasm32-unknown-unknown
-          override: true
 
       - name: 📥 Install WASM Bindgen
         uses: jetli/wasm-bindgen-action@v0.1.0
@@ -81,7 +79,7 @@ jobs:
 
       # https://github.com/bevyengine/bevy/blob/main/docs/linux_dependencies.md
       - name: 📥 Install Bevy Ubuntu dependencies
-        run: sudo apt-get install g++ pkg-config libx11-dev libasound2-dev libudev-dev
+        run: sudo apt-get update; sudo apt-get install --no-install-recommends g++ pkg-config libx11-dev libasound2-dev libudev-dev
 
       - name: ✅ Cargo Version
         run: cargo --version
