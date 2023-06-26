@@ -2,13 +2,15 @@ use bevy::prelude::*;
 use bevy_ecs_ldtk::prelude::*;
 use bevy_rapier2d::prelude::*;
 
+use crate::gamestate::GameState;
+
 pub struct LevelPlugin;
 
 impl Plugin for LevelPlugin {
   fn build(&self, app: &mut App) {
     app
-      .add_startup_system(spawn_level)
-      .add_system(spawn_level_collisions);
+      .add_system(spawn_level.in_schedule(OnEnter(GameState::InGame)))
+      .add_system(spawn_level_collisions.in_set(OnUpdate(GameState::InGame)));
   }
 }
 

@@ -4,15 +4,17 @@ use bevy::prelude::*;
 use bevy_ecs_ldtk::prelude::*;
 use bevy_rapier2d::prelude::*;
 
-use crate::{animation::Animation, input::Controllable, locomotion::Locomotor};
+use crate::{
+  animation::Animation, gamestate::GameState, input::Controllable, locomotion::Locomotor,
+};
 
 pub struct PlayerPlugin;
 
 impl Plugin for PlayerPlugin {
   fn build(&self, app: &mut App) {
     app
-      .add_system(player_added)
-      .add_system(drive_player_animations);
+      .add_system(player_added.in_set(OnUpdate(GameState::InGame)))
+      .add_system(drive_player_animations.in_set(OnUpdate(GameState::InGame)));
   }
 }
 

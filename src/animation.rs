@@ -5,11 +5,13 @@ use bevy::utils::{HashMap, Uuid};
 
 use serde::Deserialize;
 
+use crate::gamestate::GameState;
+
 pub struct AnimationPlugin;
 
 impl Plugin for AnimationPlugin {
   fn build(&self, app: &mut App) {
-    app.add_system(run_animations);
+    app.add_system(run_animations.in_set(OnUpdate(GameState::InGame)));
   }
 }
 

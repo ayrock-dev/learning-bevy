@@ -1,11 +1,13 @@
 use bevy::prelude::*;
 use bevy_rapier2d::prelude::*;
 
+use crate::gamestate::GameState;
+
 pub struct LocomotionPlugin;
 
 impl Plugin for LocomotionPlugin {
   fn build(&self, app: &mut App) {
-    app.add_system(locomotion);
+    app.add_system(locomotion.in_set(OnUpdate(GameState::InGame)));
   }
 }
 
@@ -26,7 +28,7 @@ impl Default for Locomotor {
 
 pub fn locomotion(
   time: Res<Time>,
-  mut query: Query<(&mut KinematicCharacterController, &Locomotor)>
+  mut query: Query<(&mut KinematicCharacterController, &Locomotor)>,
 ) {
   for (mut kinematics, locomotor) in query.iter_mut() {
     kinematics.translation = Some(locomotor.direction * locomotor.speed * time.delta_seconds());

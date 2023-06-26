@@ -1,12 +1,14 @@
-use bevy::{ prelude::*, input::gamepad::*, app::AppExit };
+use bevy::{app::AppExit, input::gamepad::*, prelude::*};
 
-use crate::{ locomotion::Locomotor };
+use crate::{gamestate::GameState, locomotion::Locomotor};
 
 pub struct InputPlugin;
 
 impl Plugin for InputPlugin {
   fn build(&self, app: &mut App) {
-    app.add_systems((gamepad_connections, gamepad_input));
+    app
+      .add_system(gamepad_connections)
+      .add_system(gamepad_input.in_set(OnUpdate(GameState::InGame)));
   }
 }
 
@@ -19,13 +21,16 @@ struct GamepadResource(Gamepad);
 fn gamepad_connections(
   mut commands: Commands,
   gamepad: Option<Res<GamepadResource>>,
-  mut connection_events: EventReader<GamepadConnectionEvent>
+  mut connection_events: EventReader<GamepadConnectionEvent>,
 ) {
   for event in connection_events.iter() {
     println!("New connection event {:?}", event.connection);
     match &event.connection {
       GamepadConnection::Connected(info) => {
-        println!("New gamepad connected with ID: {:?}, name: {}", event.gamepad.id, info.name);
+        println!(
+          "New gamepad connected with ID: {:?}, name: {}",
+          event.gamepad.id, info.name
+        );
 
         // if we don't have any gamepad yet, use this one
         if gamepad.is_none() {
@@ -51,7 +56,7 @@ fn gamepad_input(
   gamepad_resource: Option<Res<GamepadResource>>,
   axes: Res<Axis<GamepadAxis>>,
   mut locomotors: Query<&mut Locomotor, With<Controllable>>,
-  mut exit: EventWriter<AppExit>
+  mut exit: EventWriter<AppExit>,
 ) {
   let gamepad = if let Some(resource) = gamepad_resource {
     resource.0
