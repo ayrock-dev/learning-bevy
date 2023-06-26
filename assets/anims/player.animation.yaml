@@ -1,7 +1,93 @@
 name: player
-fps: 12
-root:
-  driver:
-    name: root
-    auto_increment: true
-  drivers:
+  fps: 6
+  root:
+    driver:
+      name: is_moving
+      auto: false
+    nodes:
+      - !Branch
+        atlas:
+          path: sprites/character/adult/body/idle/character_black_idle_body.png
+          tile_width: 11
+          tile_height: 16
+          columns: 2,
+          rows: 4,
+          padding_x: 53
+          padding_y: 48
+          offset_x: 26
+          offset_y: 26
+        driver:
+          name: direction
+          auto: false
+        nodes:
+            - !Leaf
+              frames:
+                - index: 4
+                - index: 5
+              driver:
+                name: idle_south
+                auto: true
+            - !Leaf
+              frames:
+                - index: 6
+                - index: 7
+              driver:
+                name: idle_north
+                auto: true
+            - !Leaf
+              frames:
+                - index: 2
+                - index: 3
+              driver:
+                name: idle_west
+                auto: true
+            - !Leaf
+              frames:
+                - index: 0
+                - index: 1
+              driver:
+                name: idle_east
+                auto: true
+      - !Branch
+        atlas:
+          path: sprites/character/adult/body/run/character_black_run_body.png
+          tile_width: 11
+          tile_height: 16
+          columns: 2,
+          rows: 4,
+          padding_x: 53
+          padding_y: 48
+          offset_x: 26
+          offset_y: 26
+        driver:
+          name: direction
+          auto: false
+        nodes:
+            - !Leaf
+              frames:
+                - index: 4
+                - index: 5
+              driver:
+                name: moving_south
+                auto: true
+            - !Leaf
+              frames:
+                - index: 6
+                - index: 7
+              driver:
+                name: moving_north
+                auto: true
+            - !Leaf
+              frames:
+                - index: 2
+                - index: 3
+              driver:
+                name: moving_west
+                auto: true
+            - !Leaf
+              frames:
+                - index: 0
+                - index: 1
+              driver:
+                name: moving_east
+                auto: true
