@@ -1,9 +1,9 @@
 use std::time::Duration;
 
 use bevy::prelude::*;
-use bevy::utils::{ HashMap, Uuid };
+use bevy::utils::{HashMap, Uuid};
 
-use serde::{ Deserialize, Serialize };
+use serde::Deserialize;
 
 pub struct AnimationPlugin;
 
@@ -13,14 +13,10 @@ impl Plugin for AnimationPlugin {
   }
 }
 
-#[derive(Default, Serialize, Deserialize, Debug)]
+#[derive(Default, Deserialize, Debug)]
 struct DriverDictionary(HashMap<String, usize>);
 
 impl DriverDictionary {
-  // fn is_empty(&self) -> bool {
-  //   self.0.is_empty()
-  // }
-
   fn get(&self, k: String) -> usize {
     if let Some(value) = self.0.get(&k) {
       return *value;
@@ -44,7 +40,7 @@ impl DriverDictionary {
   }
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Deserialize, Debug)]
 struct ControlDriver {
   name: String,
   auto: bool,
@@ -75,13 +71,13 @@ impl Default for ControlDriver {
   }
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Deserialize, Debug)]
 enum Node {
   Leaf(AnimationNode),
   Branch(SwitchNode),
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Deserialize, Debug)]
 struct Frame {
   index: usize,
   #[serde(skip)]
@@ -96,7 +92,7 @@ impl Frame {
   }
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Deserialize, Debug)]
 struct AnimationNode {
   frames: Vec<Frame>,
   driver: ControlDriver,
@@ -108,14 +104,13 @@ impl AnimationNode {
   }
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Deserialize, Debug)]
 struct SwitchNode {
   driver: ControlDriver,
   nodes: Vec<Node>,
 }
 
 impl SwitchNode {
-  // a switch node is a branch, select correct child node and resolve it
   fn resolve(&self, prev: &DriverDictionary, next: &mut DriverDictionary) -> &AnimationNode {
     let next_index = &self.driver.resolve(prev, next, self.nodes.len());
 
@@ -126,7 +121,7 @@ impl SwitchNode {
   }
 }
 
-#[derive(Component, Serialize, Deserialize, Debug)]
+#[derive(Component, Deserialize, Debug)]
 pub struct Animation {
   name: String,
   fps: i32,
@@ -184,7 +179,7 @@ impl From<&str> for Animation {
 
 pub fn run_animations(
   time: Res<Time>,
-  mut query: Query<(&mut Animation, &mut TextureAtlasSprite)>
+  mut query: Query<(&mut Animation, &mut TextureAtlasSprite)>,
 ) {
   for (mut animation, mut atlas) in query.iter_mut() {
     animation.update(time.delta(), &mut atlas);
