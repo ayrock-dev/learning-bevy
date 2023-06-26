@@ -1,11 +1,11 @@
 mod animation;
 mod followcamera;
+mod gamestate;
 mod input;
 mod level;
 mod locomotion;
 mod physics;
 mod player;
-mod states;
 
 use bevy::prelude::*;
 use bevy_ecs_ldtk::prelude::*;
@@ -13,6 +13,7 @@ use bevy_prototype_debug_lines::DebugLinesPlugin;
 
 use animation::AnimationPlugin;
 use followcamera::FollowCameraPlugin;
+use gamestate::GameState;
 use input::InputPlugin;
 use level::LevelPlugin;
 use locomotion::LocomotionPlugin;
@@ -21,6 +22,7 @@ use player::PlayerPlugin;
 
 fn main() {
   App::new()
+    .add_state::<GameState>()
     .add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))
     .add_plugin(DebugLinesPlugin::default())
     .add_plugin(LdtkPlugin)
@@ -38,7 +40,7 @@ fn main() {
     .add_plugin(PhysicsPlugin)
     .add_plugin(PlayerPlugin)
     .add_plugin(AnimationPlugin)
-    .add_startup_system(setup_camera)
+    .add_system(setup_camera.in_schedule(OnEnter(GameState::InGame)))
     .run();
 }
 
